@@ -1,0 +1,14 @@
+services:
+  student360-web:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: student360-demo-web
+    ports:
+      - "3000:80"
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "wget", "-q", "-O", "/dev/null", "http://127.0.0.1/"]
+      interval: 30s
+      timeout: 3s
+      retries: 3

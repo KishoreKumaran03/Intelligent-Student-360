@@ -1,0 +1,3 @@
+.quick-stats{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:8px;margin:-5px 0 14px}.quick-stats>button{border:1px solid var(--line);background:var(--paper);border-radius:5px;text-align:left;padding:9px 11px;color:var(--ink)}.quick-stats>button:hover{border-color:#c3d0ed}.quick-stats small,.quick-stats b,.quick-stats span{display:block}.quick-stats small{font-size:8px;letter-spacing:.6px;color:#98a2b0;font-weight:700}.quick-stats b{font:700 16px 'Segoe UI',sans-serif;margin:3px 0}.quick-stats span{font-size:8px;color:var(--muted)}
+@media(max-width:800px){.quick-stats{grid-template-columns:repeat(3,1fr)}}
+@media(max-width:540px){.quick-stats{grid-template-columns:repeat(2,1fr);gap:6px}.quick-stats>button{padding:8px}.quick-stats small{font-size:7px}}

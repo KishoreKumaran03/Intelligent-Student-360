@@ -1,0 +1,41 @@
+.drawer .meeting-form textarea {
+  box-sizing: border-box;
+  display: block;
+  width: 100%;
+  min-height: 104px;
+  margin-top: 6px;
+  padding: 9px 10px;
+  border: 1px solid var(--line);
+  border-radius: 4px;
+  background: var(--paper);
+  color: var(--ink);
+  font: inherit;
+  font-size: 11px;
+  line-height: 1.45;
+  resize: vertical;
+}
+
+.drawer .meeting-form textarea:focus {
+  outline: none;
+  border-color: #8ba4ed;
+  box-shadow: 0 0 0 2px #315bce18;
+}
+
+.drawer .meeting-form input[type='file'] {
+  box-sizing: border-box;
+  height: auto;
+  min-height: 42px;
+  padding: 6px 10px;
+  line-height: 28px;
+}
+
+.drawer .meeting-form input[type='file']::file-selector-button {
+  margin-right: 8px;
+  padding: 5px 9px;
+  border: 1px solid var(--line);
+  border-radius: 4px;
+  background: var(--paper-2);
+  color: var(--ink-2);
+  font: inherit;
+  cursor: pointer;
+}

@@ -1,0 +1,607 @@
+{
+  "title": "CIVORA to Intelligent Student 360 competency transfer audit",
+  "auditMode": "source-code comparison; CIVORA repository inspected read-only",
+  "sourceRepository": "C:/Users/Kishore Kumaran V S/Practice Projects/Data Visualization",
+  "targetRepository": "C:/Users/Kishore Kumaran V S/Practice Projects/Intelligent Student 360",
+  "classificationValues": [
+    "TRANSFER DIRECTLY",
+    "TRANSFER WITH ADAPTATION",
+    "TRANSFER ARCHITECTURAL PATTERN ONLY",
+    "NOT COMPATIBLE — RETAIL SPECIFIC",
+    "DEFERRED — PREDICTION/AI",
+    "ALREADY PRESENT IN STUDENT 360"
+  ],
+  "competencies": [
+    {
+      "id": "app-service-boundaries",
+      "category": "A Application architecture",
+      "source": [
+        "frontend/src/services/*",
+        "backend/routes/*",
+        "backend/services/*"
+      ],
+      "behavior": "Separates page components, reusable client services, API routes, and domain processing.",
+      "pattern": "UI → service → processing/API boundary",
+      "compatibility": "TRANSFER WITH ADAPTATION",
+      "student360Status": "Adapted; domain services own analytics, imports, reports, signals, workflows, and demo data.",
+      "transfer": "Implemented",
+      "implementation": [
+        "src/services/analyticsService.ts",
+        "src/services/importService.ts",
+        "src/services/workflowService.ts",
+        "src/services/reportService.ts"
+      ]
+    },
+    {
+      "id": "react-composition",
+      "category": "A Application architecture",
+      "source": [
+        "frontend/src/App.jsx",
+        "frontend/src/components/*"
+      ],
+      "behavior": "Composes reusable pages, charts, controls, and shell around shared state.",
+      "pattern": "Component composition and shared primitives",
+      "compatibility": "ALREADY PRESENT IN STUDENT 360",
+      "student360Status": "Existing React app components and shared panels are used across workspaces.",
+      "transfer": "No additional transfer required",
+      "implementation": [
+        "src/App.tsx"
+      ]
+    },
+    {
+      "id": "route-context",
+      "category": "A Application architecture",
+      "source": [
+        "frontend/src/App.jsx",
+        "frontend/src/main.jsx"
+      ],
+      "behavior": "Routes users to workspace/detail context and retains navigation state.",
+      "pattern": "URL-backed navigation and browser history",
+      "compatibility": "TRANSFER WITH ADAPTATION",
+      "student360Status": "Hash routes now preserve page and selected student through refresh and back/forward navigation.",
+      "transfer": "Implemented",
+      "implementation": [
+        "src/services/navigationService.ts",
+        "src/App.tsx"
+      ]
+    },
+    {
+      "id": "api-boundary",
+      "category": "A Application architecture",
+      "source": [
+        "frontend/src/services/api.js",
+        "backend/index.js",
+        "backend/routes/*"
+      ],
+      "behavior": "Separates frontend requests from Express route handlers and backend services.",
+      "pattern": "Replaceable transport adapter; API errors cross a boundary",
+      "compatibility": "TRANSFER ARCHITECTURAL PATTERN ONLY",
+      "student360Status": "Integration service is a typed seam; this standalone mock prototype has no server or network persistence.",
+      "transfer": "Implemented as extension boundary; server transport deferred by standalone mock-data scope",
+      "implementation": [
+        "src/services/integrationService.ts",
+        "src/services/mockDataService.ts"
+      ]
+    },
+    {
+      "id": "loading-error-empty-states",
+      "category": "A Application architecture",
+      "source": [
+        "frontend/src/pages/*",
+        "frontend/src/components/*"
+      ],
+      "behavior": "Represents pending, error, and empty states around data operations.",
+      "pattern": "Explicit operation state and recoverable feedback",
+      "compatibility": "TRANSFER WITH ADAPTATION",
+      "student360Status": "Import job progress/errors and empty/result states are represented in the active workspace.",
+      "transfer": "Implemented",
+      "implementation": [
+        "src/App.tsx",
+        "src/services/jobService.ts"
+      ]
+    },
+    {
+      "id": "environment-configuration",
+      "category": "A Application architecture",
+      "source": [
+        "frontend/vite.config.js",
+        "backend/config/*",
+        "backend/.env.example"
+      ],
+      "behavior": "Separates runtime URLs and secrets from application code, though development secrets exist in compose defaults.",
+      "pattern": "Environment-driven config; do not ship development credentials",
+      "compatibility": "TRANSFER ARCHITECTURAL PATTERN ONLY",
+      "student360Status": "No credentials or API endpoints are configured; no secret-bearing backend is part of the prototype.",
+      "transfer": "Applied by keeping the frontend-only demo free of credentials; server configuration belongs to a future backend",
+      "implementation": [
+        "docker-compose.yml",
+        "Dockerfile"
+      ]
+    },
+    {
+      "id": "authentication-session",
+      "category": "B Authentication / user context",
+      "source": [
+        "backend/routes/auth.js",
+        "backend/middleware/auth.js",
+        "frontend/src/context/AuthContext.jsx"
+      ],
+      "behavior": "Issues and verifies JWT sessions and bcrypt password hashes; attaches authenticated user context.",
+      "pattern": "Trusted server verifies identity and derives actor context",
+      "compatibility": "TRANSFER ARCHITECTURAL PATTERN ONLY",
+      "student360Status": "Demo role context exists; it is explicitly not authentication or a security boundary.",
+      "transfer": "Production session implementation deferred until a trusted backend exists",
+      "implementation": [
+        "src/services/authorizationService.ts"
+      ]
+    },
+    {
+      "id": "role-policy",
+      "category": "B Authentication / user context",
+      "source": [
+        "backend/middleware/auth.js",
+        "backend/routes/* ownership checks"
+      ],
+      "behavior": "Checks roles and resource ownership for retail users/projects.",
+      "pattern": "Action-level policy and resource scope",
+      "compatibility": "TRANSFER WITH ADAPTATION",
+      "student360Status": "HOD/Tutor/Student/Faculty/Office action grants are centralized and checked by demo workflow services.",
+      "transfer": "Adapted for institutional actions; enforcement remains server-side work for production",
+      "implementation": [
+        "src/services/authorizationService.ts",
+        "src/services/workflowService.ts"
+      ]
+    },
+    {
+      "id": "multipart-upload-preview",
+      "category": "C Data ingestion",
+      "source": [
+        "backend/routes/upload.js",
+        "backend/utils/previewStore.js"
+      ],
+      "behavior": "Accepts tabular uploads, previews parsed data, and tracks temporary preview state.",
+      "pattern": "Upload → parse → preview → user confirmation",
+      "compatibility": "TRANSFER WITH ADAPTATION",
+      "student360Status": "Browser-local CSV/XLSX preview supports institutional schemas, size/type checks, and multi-file batches.",
+      "transfer": "Adapted; unsafe server temp-file handling replaced by browser processing",
+      "implementation": [
+        "src/services/importService.ts",
+        "src/App.tsx"
+      ]
+    },
+    {
+      "id": "column-mapping",
+      "category": "C Data ingestion",
+      "source": [
+        "frontend/src/pages/Analytics/UploadColumnMappingPage.jsx",
+        "backend/routes/upload.js"
+      ],
+      "behavior": "Suggests and persists source-to-target mappings before processing.",
+      "pattern": "Explicit schema mapping with editable suggestions",
+      "compatibility": "TRANSFER WITH ADAPTATION",
+      "student360Status": "Column aliases suggest mappings against typed institutional dataset schemas; required mappings are enforced.",
+      "transfer": "Implemented",
+      "implementation": [
+        "src/services/normalizationService.ts",
+        "src/services/importService.ts"
+      ]
+    },
+    {
+      "id": "batch-import",
+      "category": "C Data ingestion",
+      "source": [
+        "backend/routes/upload.js",
+        "backend/utils/pythonTask.js"
+      ],
+      "behavior": "Processes uploaded tabular inputs as asynchronous work.",
+      "pattern": "Batch orchestration and progress reporting",
+      "compatibility": "TRANSFER WITH ADAPTATION",
+      "student360Status": "Multi-file batches validate compatible headers and process through job service.",
+      "transfer": "Implemented; incompatible header sets stop before processing",
+      "implementation": [
+        "src/services/importService.ts",
+        "src/services/jobService.ts"
+      ]
+    },
+    {
+      "id": "tabular-parsing",
+      "category": "C Data ingestion",
+      "source": [
+        "backend/scripts/process_excel.py",
+        "backend/routes/upload.js"
+      ],
+      "behavior": "Reads CSV/XLSX and transforms rows for downstream processing.",
+      "pattern": "Format-aware parser behind a stable row contract",
+      "compatibility": "TRANSFER WITH ADAPTATION",
+      "student360Status": "Quoted CSV parser and browser XLSX reader produce a common row representation.",
+      "transfer": "Adapted to client-only prototype",
+      "implementation": [
+        "src/services/importService.ts"
+      ]
+    },
+    {
+      "id": "schema-validation",
+      "category": "D Data validation",
+      "source": [
+        "backend/scripts/process_excel.py",
+        "backend/routes/upload.js"
+      ],
+      "behavior": "Checks required input columns and processing shape.",
+      "pattern": "Schema validation before transformation",
+      "compatibility": "TRANSFER WITH ADAPTATION",
+      "student360Status": "Per-entity schemas check required identifiers, finite values, ranges, dates, and field relationships.",
+      "transfer": "Implemented",
+      "implementation": [
+        "src/services/validationService.ts"
+      ]
+    },
+    {
+      "id": "missing-value-preservation",
+      "category": "D Data validation",
+      "source": [
+        "backend/scripts/process_excel.py"
+      ],
+      "behavior": "Retail cleaner coerces invalid numeric cells to zero, a domain-dangerous behavior for academic data.",
+      "pattern": "Preserve raw source separately from normalized value and validation state",
+      "compatibility": "NOT COMPATIBLE — RETAIL SPECIFIC",
+      "student360Status": "Zero-filling is intentionally excluded; missing/invalid academic values remain visible and distinct.",
+      "transfer": "Rejected retail behavior; safe institutional treatment is implemented",
+      "implementation": [
+        "src/services/validationService.ts",
+        "src/domain/types.ts"
+      ]
+    },
+    {
+      "id": "duplicate-relational-validation",
+      "category": "D Data validation",
+      "source": [
+        "backend/scripts/process_excel.py",
+        "backend/routes/upload.js",
+        "backend/db.js"
+      ],
+      "behavior": "Checks required values and persists domain rows; retail relationships are tied to stores/products.",
+      "pattern": "Duplicate detection plus referential checks",
+      "compatibility": "TRANSFER WITH ADAPTATION",
+      "student360Status": "Duplicate identifiers and unmatched demo student references become review issues with original values retained.",
+      "transfer": "Adapted to institutional identifiers and relationships",
+      "implementation": [
+        "src/services/validationService.ts",
+        "src/services/importService.ts"
+      ]
+    },
+    {
+      "id": "normalization",
+      "category": "E Data normalization",
+      "source": [
+        "backend/scripts/process_excel.py",
+        "frontend/src/utils/*"
+      ],
+      "behavior": "Cleans column names and selected values before analytics and persistence.",
+      "pattern": "Canonical labels/IDs, date and finite-number normalization",
+      "compatibility": "TRANSFER WITH ADAPTATION",
+      "student360Status": "Institutional headers, aliases, identifiers, dates, and numeric values normalize without erasing source values.",
+      "transfer": "Implemented",
+      "implementation": [
+        "src/utils/normalize.ts",
+        "src/services/normalizationService.ts",
+        "src/services/validationService.ts"
+      ]
+    },
+    {
+      "id": "kpi-aggregation",
+      "category": "F Analytics engine",
+      "source": [
+        "backend/routes/dashboard.js",
+        "frontend/src/pages/Dashboard/DashboardSummary.jsx"
+      ],
+      "behavior": "Aggregates retail totals and summary metrics before displaying dashboard cards.",
+      "pattern": "Reusable metric definitions and grouped aggregation",
+      "compatibility": "TRANSFER WITH ADAPTATION",
+      "student360Status": "Typed department dashboard contract calculates institutional KPI values and labels their source/limits.",
+      "transfer": "Adapted to academic and operational demo records",
+      "implementation": [
+        "src/services/analyticsService.ts",
+        "src/services/mockDataService.ts"
+      ]
+    },
+    {
+      "id": "group-compare-trend",
+      "category": "F Analytics engine",
+      "source": [
+        "frontend/src/pages/Analytics/AdvancedAnalyticsBoard.jsx",
+        "backend/routes/dashboard.js"
+      ],
+      "behavior": "Prepares grouped comparisons, period series, rankings, and breakdowns for charts.",
+      "pattern": "Pure analytical transforms independent of rendering",
+      "compatibility": "TRANSFER WITH ADAPTATION",
+      "student360Status": "Reusable group, compare, filter, trend, distribution, and KPI transforms operate on Student 360 records.",
+      "transfer": "Implemented",
+      "implementation": [
+        "src/services/analyticsService.ts"
+      ]
+    },
+    {
+      "id": "analytical-contract",
+      "category": "P Dashboard data contracts",
+      "source": [
+        "backend/routes/dashboard.js",
+        "frontend/src/pages/Dashboard/DashboardSummary.jsx"
+      ],
+      "behavior": "Shapes server aggregation results for frontend summaries and charts.",
+      "pattern": "Stable metric contract between data source, service, and visualization",
+      "compatibility": "TRANSFER WITH ADAPTATION",
+      "student360Status": "Dashboard contract separates source records and metrics from chart rendering; source is mock service today.",
+      "transfer": "Implemented",
+      "implementation": [
+        "src/services/analyticsService.ts",
+        "src/services/mockDataService.ts"
+      ]
+    },
+    {
+      "id": "chart-transformations",
+      "category": "G Data visualization logic",
+      "source": [
+        "frontend/src/components/charts/RevenueChart.jsx",
+        "frontend/src/components/charts/PieAnalytics.jsx",
+        "frontend/src/components/charts/StateMap.jsx"
+      ],
+      "behavior": "Transforms aggregate results into line, bar, donut, and geographic retail visuals.",
+      "pattern": "Visualization consumes prepared metrics; generic chart interactions",
+      "compatibility": "TRANSFER WITH ADAPTATION",
+      "student360Status": "Student-facing visualizations consume institutional dashboard and journey data; retail geography/metrics are excluded.",
+      "transfer": "Adapted to institutional metrics and existing chart components",
+      "implementation": [
+        "src/App.tsx",
+        "src/services/analyticsService.ts"
+      ]
+    },
+    {
+      "id": "geographic-retail-map",
+      "category": "G Data visualization logic",
+      "source": [
+        "frontend/src/components/charts/StateMap.jsx"
+      ],
+      "behavior": "Maps store sales by Indian state.",
+      "pattern": "Geographic choropleth for retail footprint",
+      "compatibility": "NOT COMPATIBLE — RETAIL SPECIFIC",
+      "student360Status": "No institutional geographic requirement or compatible Student 360 data contract exists.",
+      "transfer": "Not transferred",
+      "implementation": []
+    },
+    {
+      "id": "filter-search-drilldown",
+      "category": "H Filtering / search / drill-down",
+      "source": [
+        "frontend/src/pages/Analytics/AdvancedAnalyticsBoard.jsx",
+        "frontend/src/pages/Dashboard/DashboardSummary.jsx"
+      ],
+      "behavior": "Filters dashboard results and opens detail-oriented views from summaries.",
+      "pattern": "Composable record filters and cross-page selected entity context",
+      "compatibility": "TRANSFER WITH ADAPTATION",
+      "student360Status": "Reusable filters cover search and institutional dimensions; student detail deep-links and page history work through hash routes.",
+      "transfer": "Adapted to institutional dimensions",
+      "implementation": [
+        "src/services/analyticsService.ts",
+        "src/services/navigationService.ts",
+        "src/App.tsx"
+      ]
+    },
+    {
+      "id": "rule-signals",
+      "category": "I Alert / signal engine",
+      "source": [
+        "backend/routes/notifications.js",
+        "backend/routes/dashboard.js"
+      ],
+      "behavior": "Generates notifications from retail thresholds and stored events.",
+      "pattern": "Rule evaluation → evidence-backed signal → owner/action lifecycle",
+      "compatibility": "TRANSFER WITH ADAPTATION",
+      "student360Status": "Academic rules produce persistent signals with evidence, severity, owner, due date, linked case, action, and outcome fields.",
+      "transfer": "Adapted; retail thresholds removed",
+      "implementation": [
+        "src/services/signalService.ts",
+        "src/services/workflowService.ts"
+      ]
+    },
+    {
+      "id": "signal-notification-state",
+      "category": "O Notifications / alert presentation",
+      "source": [
+        "backend/routes/notifications.js",
+        "frontend/src/context/NotificationContext.jsx"
+      ],
+      "behavior": "Lists and updates user notification state and routes alerts to their context.",
+      "pattern": "Read/unread/dismiss state and contextual navigation",
+      "compatibility": "TRANSFER WITH ADAPTATION",
+      "student360Status": "Browser-local notifications support read, unread, dismiss, priority, and target-page navigation.",
+      "transfer": "Adapted to cases, requests, meetings, and academic alerts",
+      "implementation": [
+        "src/services/notificationService.ts",
+        "src/App.tsx"
+      ]
+    },
+    {
+      "id": "python-processing",
+      "category": "J Processing / job architecture",
+      "source": [
+        "backend/utils/pythonTask.js",
+        "backend/scripts/process_excel.py"
+      ],
+      "behavior": "Runs separate Python processing tasks and captures completion/error outcomes.",
+      "pattern": "Isolated processor behind job lifecycle",
+      "compatibility": "TRANSFER ARCHITECTURAL PATTERN ONLY",
+      "student360Status": "Typed in-browser job lifecycle tracks progress, cancellation, errors, result IDs, and retry while processor is session-bound.",
+      "transfer": "Implemented without subprocess or server runtime",
+      "implementation": [
+        "src/services/jobService.ts",
+        "src/services/importService.ts"
+      ]
+    },
+    {
+      "id": "job-lifecycle-retry",
+      "category": "J Processing / job architecture",
+      "source": [
+        "backend/utils/pythonTask.js",
+        "backend/routes/upload.js"
+      ],
+      "behavior": "Tracks long-running processing and failure results; server task behavior is tied to upload implementation.",
+      "pattern": "Queued/running/succeeded/failed/cancelled states, retry, progress",
+      "compatibility": "TRANSFER WITH ADAPTATION",
+      "student360Status": "Job service enforces valid transitions and can rerun an in-memory failed processor in the same browser session.",
+      "transfer": "Adapted; durable background workers are not part of client-only prototype",
+      "implementation": [
+        "src/services/jobService.ts"
+      ]
+    },
+    {
+      "id": "prophet-training-serving",
+      "category": "K Forecasting infrastructure",
+      "source": [
+        "backend/utils/prophetTraining.js",
+        "backend/services/prophetForecastService.js",
+        "backend/models/*"
+      ],
+      "behavior": "Trains and serves retail forecasts with saved model artifacts and evaluation metrics.",
+      "pattern": "Versioned train/evaluate/artifact/serve lifecycle",
+      "compatibility": "DEFERRED — PREDICTION/AI",
+      "student360Status": "No student prediction implemented; only an explicit future prediction service contract exists.",
+      "transfer": "Model lifecycle deferred; no model/artifact code copied",
+      "implementation": [
+        "src/services/predictionService.ts"
+      ]
+    },
+    {
+      "id": "pdf-png-csv-export",
+      "category": "L Reporting / export",
+      "source": [
+        "frontend/src/utils/exportUtils.js"
+      ],
+      "behavior": "Exports chart captures and data/report content as PDF, PNG, and CSV.",
+      "pattern": "Reusable export utilities operate on report state and selected chart element",
+      "compatibility": "TRANSFER WITH ADAPTATION",
+      "student360Status": "Department report artifact carries sources and calculations and exports to CSV/PDF/PNG.",
+      "transfer": "Adapted to institutional report contracts",
+      "implementation": [
+        "src/services/reportService.ts",
+        "src/App.tsx"
+      ]
+    },
+    {
+      "id": "report-evidence-contract",
+      "category": "L Reporting / export",
+      "source": [
+        "frontend/src/utils/exportUtils.js",
+        "backend/routes/dashboard.js"
+      ],
+      "behavior": "Packages selected analytics for download; source attribution is limited in the retail UI.",
+      "pattern": "Report snapshot includes filters, metrics, sources, and calculation notes",
+      "compatibility": "TRANSFER WITH ADAPTATION",
+      "student360Status": "Report artifact stores evidence sources, applied filters, limitations, and metric definitions.",
+      "transfer": "Extended for institutional auditability",
+      "implementation": [
+        "src/services/reportService.ts"
+      ]
+    },
+    {
+      "id": "ai-provider-tool-boundary",
+      "category": "M AI architecture",
+      "source": [
+        "backend/services/civoraAiService.js",
+        "backend/services/toolRegistry.js",
+        "backend/index.js"
+      ],
+      "behavior": "Separates provider calls, tool registration/execution, and assembled context.",
+      "pattern": "Provider-neutral assistant service plus allowlisted tools and typed context",
+      "compatibility": "DEFERRED — PREDICTION/AI",
+      "student360Status": "No assistant or model calls; a future service boundary is present only.",
+      "transfer": "AI behavior deferred as requested; provider/tool execution not enabled",
+      "implementation": [
+        "src/services/aiService.ts",
+        "src/services/assistantService.ts"
+      ]
+    },
+    {
+      "id": "retrieval-ranking-attribution",
+      "category": "N Knowledge retrieval",
+      "source": [
+        "backend/services/civoraKnowledgeService.js"
+      ],
+      "behavior": "Indexes text, retrieves lexical/hash-similarity candidates, ranks matches, assembles context, and attributes source docs.",
+      "pattern": "Index → retrieve/rank → scoped context with source attribution",
+      "compatibility": "DEFERRED — PREDICTION/AI",
+      "student360Status": "Typed scoped retrieval/source contract only; no index, ranking, or retrieval is active.",
+      "transfer": "Retrieval implementation deferred; architecture seam is defined",
+      "implementation": [
+        "src/services/retrievalService.ts"
+      ]
+    },
+    {
+      "id": "database-persistence",
+      "category": "Q Development / data infrastructure",
+      "source": [
+        "backend/db.js",
+        "backend/routes/*"
+      ],
+      "behavior": "Persists users, projects, and retail analytics in MySQL.",
+      "pattern": "Repository/database boundary with entity ownership filters",
+      "compatibility": "TRANSFER ARCHITECTURAL PATTERN ONLY",
+      "student360Status": "Mock data service and browser-local demo persistence stand in for persistence; no server database is configured.",
+      "transfer": "Database implementation deferred by standalone prototype scope",
+      "implementation": [
+        "src/services/mockDataService.ts",
+        "src/utils/storage.ts"
+      ]
+    },
+    {
+      "id": "docker-development",
+      "category": "Q Development / deployment",
+      "source": [
+        "docker-compose.yml",
+        "backend/Dockerfile",
+        "frontend/Dockerfile"
+      ],
+      "behavior": "Starts frontend, API/Python worker, and MySQL for local development; original defaults include unsafe development assumptions.",
+      "pattern": "Repeatable local container startup and coordinated service lifecycle",
+      "compatibility": "TRANSFER WITH ADAPTATION",
+      "student360Status": "Safe frontend-only Docker build and start/stop scripts; no backend/database or destructive cleanup is included.",
+      "transfer": "Adapted to the actual standalone app and safe cleanup",
+      "implementation": [
+        "Dockerfile",
+        "docker-compose.yml",
+        "nginx.conf",
+        "initialization/START_DOCKER.bat",
+        "initialization/STOP_DOCKER.bat"
+      ]
+    },
+    {
+      "id": "retail-semantic-model",
+      "category": "Domain logic excluded",
+      "source": [
+        "backend/routes/dashboard.js",
+        "backend/scripts/process_excel.py",
+        "backend/services/prophetForecastService.js"
+      ],
+      "behavior": "Implements sales, revenue, inventory, products, stores, and retail demand semantics.",
+      "pattern": "Retail business rules and fields",
+      "compatibility": "NOT COMPATIBLE — RETAIL SPECIFIC",
+      "student360Status": "No retail field names, calculations, schemas, or forecast model are used in Student 360.",
+      "transfer": "Not transferred",
+      "implementation": []
+    }
+  ],
+  "summary": {
+    "totalCompetenciesIdentified": 34,
+    "directlyTransferred": 0,
+    "adapted": 22,
+    "architecturalPatternsTransferred": 5,
+    "alreadyPresent": 1,
+    "deferred": 3,
+    "retailSpecificNotCompatible": 3,
+    "compatibleCompetenciesStillMissing": 0,
+    "scopeNotes": [
+      "Direct transfer count is zero because all reusable behaviors required institutional adaptation or an architecture-only transfer; retail code was not copied.",
+      "Authentication enforcement, durable server persistence, API transport, and background workers require a trusted backend and are explicitly outside this standalone mock-data prototype; the inventory records the compatible architecture seams now present.",
+      "Prediction models and active AI/retrieval are explicitly deferred by the request."
+    ]
+  }
+}
