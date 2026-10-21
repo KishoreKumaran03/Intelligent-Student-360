@@ -14,5 +14,6 @@ if errorlevel 1 exit /b 1
 
 echo.
 echo Student 360 is available at http://localhost:3000
-echo Demo data stays in this browser. No backend or institutional system is connected.
+echo The local AI backend is connected. Start Ollama on this computer with the configured model.
+echo No institutional identity or production student data is connected.
 endlocal

@@ -1,4 +1,17 @@
 services:
+  student360-ai:
+    build:
+      context: .
+      dockerfile: backend/Dockerfile
+    container_name: student360-local-ai
+    environment:
+      AI_HOST: 0.0.0.0
+      OLLAMA_BASE_URL: http://host.docker.internal:11434
+      OLLAMA_MODEL: ${OLLAMA_MODEL:-qwen2.5:3b}
+      AI_REQUEST_TIMEOUT_MS: ${AI_REQUEST_TIMEOUT_MS:-60000}
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    restart: unless-stopped
   student360-web:
     build:
       context: .
@@ -7,6 +20,8 @@ services:
     ports:
       - "3000:80"
     restart: unless-stopped
+    depends_on:
+      - student360-ai
     healthcheck:
       test: ["CMD", "wget", "-q", "-O", "/dev/null", "http://127.0.0.1/"]
       interval: 30s

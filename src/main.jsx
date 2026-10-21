@@ -1,9 +1,10 @@
-import { jsx as _jsx } from "react/jsx-runtime";
+import { jsxs as _jsxs, jsx as _jsx } from "react/jsx-runtime";
 import React from 'react';
 import { createRoot } from 'react-dom/client';
 import App from './App';
+import AssistantWidget from './AssistantWidget';
 import './styles.css';
 import './dashboard.css';
 import './transfer.css';
-createRoot(document.getElementById('root')).render(_jsx(React.StrictMode, { children: _jsx(App, {}) }));
+createRoot(document.getElementById('root')).render(_jsx(React.StrictMode, { children: _jsxs(React.Fragment, { children: [_jsx(App, {}), _jsx(AssistantWidget, {})] }) }));
 import './layout-fixes.css';
